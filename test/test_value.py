@@ -41,6 +41,29 @@ def test_value_operations() -> None:
     o_torch.backward()
 
     assert x1_torch.grad == x1_value.grad
+    assert x2_torch.grad == x2_value.grad
     assert o_value.data == o_torch.item()
 
+def test_more_value_operations() -> None:
+    """
+    Check the value class operations.
+    """
+    x1_value = Value(2.0)
+    x2_value = Value(0.0)
+    x3_value = Value(-3.0)
+    x4_value = Value(1.0)
+    b_value = (x1_value - x2_value)**2 /x3_value
+    o_value = (b_value*x4_value).relu() 
+    o_value.backward()
 
+    x1_torch = torch.tensor(2.0, requires_grad=True)
+    x2_torch = torch.tensor(0.0, requires_grad=True)
+    x3_torch = torch.tensor(-3.0, requires_grad=True)
+    x4_torch = torch.tensor(1.0, requires_grad=True)
+    b_torch = (x1_torch - x2_torch)**2 / x3_torch
+    o_torch = (b_torch * x4_torch).relu()
+    o_torch.backward()
+
+    assert x1_torch.grad == x1_value.grad
+    assert x2_torch.grad == x2_value.grad
+    assert o_value.data == o_torch.item()
