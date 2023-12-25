@@ -174,6 +174,21 @@ class Value:
 
         out._backward = _backward
         return out
+    
+    def relu(self):
+        """
+        Applies the ReLU activation function to the Value object.
+
+        Returns:
+        A new Value object representing the result of the ReLU activation.
+        """
+        out = Value(0 if self.data < 0 else self.data, (self,), 'ReLU')
+
+        def _backward():
+            self.grad += (out.data > 0) * out.grad
+        out._backward = _backward
+
+        return out
 
     def backward(self):
         """
